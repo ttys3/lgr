@@ -16,7 +16,7 @@ Named(name string) *LogImpl
 With(keysAndValues ...interface{}) *LogImpl
 ```
 
-### 1.2 Simple Usage
+### 1.2 using default config
 
 ```golang
 // with default config: info level, encode to json
@@ -65,6 +65,10 @@ WithEncoding(encoding string)
 
 WithLevel(level string)
 
+WithColorLevel(enable bool)
+
+WithTimeKey(tk string)
+
 WithDatetimeLayout(layout string)
 
 WithDisableStacktrace(disableStacktrace bool)
@@ -76,5 +80,7 @@ WithContextFields(kv ...string)
 WithOutputPaths(outputPaths ...string)
 
 WithErrorOutputPaths(errOutputPaths ...string)
+
+WithCustomSink(writer io.Writer)
 ```
 
