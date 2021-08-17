@@ -238,6 +238,7 @@ func (l *LogImpl) build() *LogImpl {
 		}
 	}
 
+	// build the zap logger
 	zaplgr := zap.New(
 		zapcore.NewCore(enc, sink, level),
 		l.Config.buildOptions(errSink, sampling)...,
@@ -257,6 +258,7 @@ func (l *LogImpl) build() *LogImpl {
 		zaplgr = zaplgr.With(fields...)
 	}
 
+	// we use the convenient sugared logger
 	zapsugar := zaplgr.Sugar()
 	l.s = zapsugar
 	return l
