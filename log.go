@@ -153,10 +153,20 @@ func NewLogger(options ...Option) *LogImpl {
 
 func (l *LogImpl) build() *LogImpl {
 	zapcfg := zap.NewProductionConfig()
-	zapcfg.Encoding = l.Encoding
-	zapcfg.Level = zap.NewAtomicLevelAt(getZapLevel(l.Level))
+
 	zapcfg.DisableStacktrace = l.DisableStacktrace
 	zapcfg.EncoderConfig.EncodeTime = ZapTimeEncoder(l.DatetimeLayout)
+
+	if l.Encoding != "" {
+		zapcfg.Encoding = l.Encoding
+	}
+	if zapcfg.Encoding == "console" {
+		zapcfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	}
+
+	if l.Level != "" {
+		zapcfg.Level = zap.NewAtomicLevelAt(getZapLevel(l.Level))
+	}
 
 	if len(l.OutputPaths) > 0 {
 		zapcfg.OutputPaths = l.OutputPaths
@@ -164,10 +174,6 @@ func (l *LogImpl) build() *LogImpl {
 
 	if len(l.ErrorOutputPaths) > 0 {
 		zapcfg.ErrorOutputPaths = l.ErrorOutputPaths
-	}
-
-	if zapcfg.Encoding == "console" {
-		zapcfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 
 	zaplgr, err := zapcfg.Build()
