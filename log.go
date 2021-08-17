@@ -34,6 +34,8 @@ type LogImpl struct {
 	Level             string
 	DatetimeLayout    string
 	ContextFields     []string // key, value  adds structured context
+	OutputPaths       []string
+	ErrorOutputPaths  []string
 }
 
 type Logger interface {
@@ -78,6 +80,18 @@ func WithContextFields(kv ...string) Option {
 	}
 }
 
+func WithOutputPaths(outputPaths ...string) Option {
+	return func(l *LogImpl) {
+		l.OutputPaths = outputPaths
+	}
+}
+
+func WithErrorOutputPaths(errOutputPaths ...string) Option {
+	return func(l *LogImpl) {
+		l.ErrorOutputPaths = errOutputPaths
+	}
+}
+
 func defaultCfg() *LogImpl {
 	l := &LogImpl{
 		Encoding:          "json",
@@ -86,6 +100,8 @@ func defaultCfg() *LogImpl {
 		DisableStacktrace: true,
 		Name:              "",
 		ContextFields:     []string{},
+		OutputPaths:       []string{"stderr"},
+		ErrorOutputPaths:  []string{"stderr"},
 	}
 	return l
 }
@@ -116,6 +132,14 @@ func (l *LogImpl) build() *LogImpl {
 	zapcfg.Level = zap.NewAtomicLevelAt(getZapLevel(l.Level))
 	zapcfg.DisableStacktrace = l.DisableStacktrace
 	zapcfg.EncoderConfig.EncodeTime = ZapTimeEncoder(l.DatetimeLayout)
+
+	if len(l.OutputPaths) > 0 {
+		zapcfg.OutputPaths = l.OutputPaths
+	}
+
+	if len(l.ErrorOutputPaths) > 0 {
+		zapcfg.ErrorOutputPaths = l.ErrorOutputPaths
+	}
 
 	if zapcfg.Encoding == "console" {
 		zapcfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder

@@ -44,6 +44,18 @@ func TestNewLevelDebug(t *testing.T) {
 	log.Error("something really bad happend!", "uid", 1024, "name", "user001")
 }
 
+func TestNewLogWriteToFile(t *testing.T) {
+	t.Logf("-----------------------------------------------------------------")
+	log := NewLogger(WithName("log001"), WithEncoding("json"), WithLevel("debug"), WithOutputPaths("/tmp/lgr.log"), WithErrorOutputPaths("/tmp/lgr.err.log"))
+	log = log.With("foo", "bar")
+
+	log.Debug("this is some debug log", "uid", 7, "name", "user001")
+	log.Info("this is a info message", "uid", 7, "name", "user001")
+	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
+	log.Error("something bad happend!", "uid", 1024, "name", "user001")
+	log.Error("something really bad happend!", "uid", 1024, "name", "user001")
+}
+
 func TestNewInvalidEncodingMustPanic(t *testing.T) {
 	t.Logf("-----------------------------------------------------------------")
 	defer func() {
