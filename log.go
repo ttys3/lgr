@@ -12,6 +12,11 @@ var (
 	_globalLog *logImpl
 )
 
+// type assertion ensure implementation
+// do not return interface, this is bad for caller
+// see https://github.com/golang/go/wiki/CodeReviewComments#interfaces
+var _ Logger = (*logImpl)(nil)
+
 // global logger, call via S()
 func S() *logImpl {
 	once.Do(func() {
