@@ -3,6 +3,19 @@
 
 ## usage
 
+## supported methods
+
+```golang
+	Debug(msg string, keysAndValues ...interface{})
+	Info(msg string, keysAndValues ...interface{})
+	Warn(msg string, keysAndValues ...interface{})
+	Error(msg string, keysAndValues ...interface{})
+	Fatal(msg string, keysAndValues ...interface{})
+	Sync() error
+	Named(name string) *LogImpl
+	With(keysAndValues ...interface{}) *LogImpl
+```
+
 ### simple
 
 ```golang
