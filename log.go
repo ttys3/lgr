@@ -18,22 +18,6 @@ var (
 // see https://github.com/golang/go/wiki/CodeReviewComments#interfaces
 var _ Logger = (*LogImpl)(nil)
 
-// global logger, call via S()
-func S() *LogImpl {
-	once.Do(func() {
-		_globalLogLock.RLock()
-		oldLogger := _globalLog
-		_globalLogLock.RUnlock()
-
-		// only initialize default logger if it is not set
-		if oldLogger == nil {
-			l := NewDefault()
-			ReplaceGlobal(l)
-		}
-	})
-	return _globalLog
-}
-
 type LogImpl struct {
 	s *zap.SugaredLogger
 	Config
@@ -63,6 +47,22 @@ func NewLogger(options ...Option) *LogImpl {
 		option(l)
 	}
 	return l.build()
+}
+
+// global logger, call via S()
+func S() *LogImpl {
+	once.Do(func() {
+		_globalLogLock.RLock()
+		oldLogger := _globalLog
+		_globalLogLock.RUnlock()
+
+		// only initialize default logger if it is not set
+		if oldLogger == nil {
+			l := NewDefault()
+			ReplaceGlobal(l)
+		}
+	})
+	return _globalLog
 }
 
 type Logger interface {
@@ -201,23 +201,6 @@ func (l *LogImpl) build() *LogImpl {
 	zapsugar := zaplgr.Sugar()
 	l.s = zapsugar
 	return l
-}
-
-func getZapLevel(level string) zapcore.Level {
-	zapLevel := zap.InfoLevel
-	switch level {
-	case "debug":
-		zapLevel = zap.DebugLevel
-	case "info":
-		zapLevel = zap.InfoLevel
-	case "warn":
-		zapLevel = zap.WarnLevel
-	case "error":
-		zapLevel = zap.ErrorLevel
-	case "fatal":
-		zapLevel = zap.FatalLevel
-	}
-	return zapLevel
 }
 
 func (l *LogImpl) Debug(msg string, keysAndValues ...interface{}) {
