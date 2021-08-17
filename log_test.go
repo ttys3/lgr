@@ -92,12 +92,12 @@ func TestNewInvalidKeyValPairsMustPanic(t *testing.T) {
 		}
 	}()
 
-	NewLogger(WithName("log001"), WithEncoding("console"), WithContextFields("only_key_no_value"))
+	NewLogger(WithName("log001"), WithEncoding("console"), WithInitialFields("only_key_no_value"))
 }
 
 func TestNewInvalidKeyValPairsSugarLoggerWillNotPanic(t *testing.T) {
 	t.Logf("-----------------------------------------------------------------")
-	log := NewLogger(WithName("log001"), WithEncoding("console"), WithContextFields("version", "1.0.0"))
+	log := NewLogger(WithName("log001"), WithEncoding("console"), WithInitialFields("version", "1.0.0"))
 	// will add an extra error log message: Ignored key without a value
 	log.With("only_key").Info("hello world")
 }

@@ -42,7 +42,7 @@ type Config struct {
 	Level             string
 	TimeKey           string
 	DatetimeLayout    string
-	ContextFields     []string // key, value paris to add structured context
+	InitialFields     []string // InitialFields is a collection of key,value paris to add to the root logger
 	OutputPaths       []string
 	ErrorOutputPaths  []string  // for zap logging self error
 	CustomSink        io.Writer // this will override OutputPaths config
@@ -102,7 +102,7 @@ func defaultCfg() *LogImpl {
 		Level:             "info",
 		TimeKey:           "ts",
 		DatetimeLayout:    DefaultTimeLayout,
-		ContextFields:     []string{},
+		InitialFields:     []string{},
 		OutputPaths:       []string{"stderr"},
 		ErrorOutputPaths:  []string{"stderr"},
 		CustomSink:        nil,
@@ -249,10 +249,10 @@ func (l *LogImpl) build() *LogImpl {
 		zaplgr = zaplgr.Named(l.Name)
 	}
 
-	if len(l.ContextFields)%2 == 0 && len(l.ContextFields) > 0 {
-		fields := make([]zap.Field, 0, len(l.ContextFields)/2)
-		for i := 0; i < len(l.ContextFields); i += 2 {
-			fields = append(fields, zap.String(l.ContextFields[i], l.ContextFields[i+1]))
+	if len(l.InitialFields)%2 == 0 && len(l.InitialFields) > 0 {
+		fields := make([]zap.Field, 0, len(l.InitialFields)/2)
+		for i := 0; i < len(l.InitialFields); i += 2 {
+			fields = append(fields, zap.String(l.InitialFields[i], l.InitialFields[i+1]))
 		}
 		zaplgr = zaplgr.With(fields...)
 	}

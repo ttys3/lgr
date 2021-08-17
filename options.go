@@ -32,12 +32,12 @@ func WithName(loggerName string) Option {
 	return func(l *LogImpl) { l.Name = loggerName }
 }
 
-func WithContextFields(kv ...string) Option {
+func WithInitialFields(kv ...string) Option {
 	if len(kv)%2 != 0 {
 		panic("ContextFields must in key, value pairs")
 	}
 	return func(l *LogImpl) {
-		l.ContextFields = kv
+		l.InitialFields = kv
 	}
 }
 

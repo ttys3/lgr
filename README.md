@@ -75,7 +75,7 @@ WithDisableStacktrace(disableStacktrace bool)
 
 WithName(loggerName string)
 
-WithContextFields(kv ...string)
+WithInitialFields(kv ...string)
 
 WithOutputPaths(outputPaths ...string)
 
