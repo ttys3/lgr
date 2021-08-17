@@ -47,7 +47,7 @@ type Config struct {
 	DatetimeLayout    string
 	ContextFields     []string // key, value  adds structured context
 	OutputPaths       []string
-	ErrorOutputPaths  []string
+	ErrorOutputPaths  []string // for zap logging self error
 }
 
 func NewDefault() *LogImpl {
@@ -128,6 +128,7 @@ func defaultCfg() *LogImpl {
 		Name:              "",
 		ContextFields:     []string{},
 		// zap.newFileSink has special handle for `stdout` and `stderr`
+		// if you want a dummy sink, use `/dev/null`
 		OutputPaths:      []string{"stderr"},
 		ErrorOutputPaths: []string{"stderr"},
 	}
@@ -181,7 +182,10 @@ func (l *LogImpl) build() *LogImpl {
 	if err != nil {
 		panic(err)
 	}
+
+	// skip ourself from caller stack
 	zaplgr = zaplgr.WithOptions(zap.AddCallerSkip(1))
+
 	if l.Name != "" {
 		zaplgr = zaplgr.Named(l.Name)
 	}
