@@ -8,8 +8,9 @@ import (
 )
 
 var (
-	once       sync.Once
-	_globalLog *LogImpl
+	once           sync.Once
+	_globalLog     *LogImpl
+	_globalLogLock sync.RWMutex
 )
 
 // type assertion ensure implementation
@@ -20,8 +21,15 @@ var _ Logger = (*LogImpl)(nil)
 // global logger, call via S()
 func S() *LogImpl {
 	once.Do(func() {
-		l := NewDefault()
-		ReplaceGlobal(l)
+		_globalLogLock.RLock()
+		oldLogger := _globalLog
+		_globalLogLock.RUnlock()
+
+		// only initialize default logger if it is not set
+		if oldLogger == nil {
+			l := NewDefault()
+			ReplaceGlobal(l)
+		}
 	})
 	return _globalLog
 }
@@ -112,7 +120,10 @@ func NewDefault() *LogImpl {
 }
 
 func ReplaceGlobal(newlgr *LogImpl) *LogImpl {
+	_globalLogLock.Lock()
 	_globalLog = newlgr
+	_globalLogLock.Unlock()
+
 	return _globalLog
 }
 
@@ -163,9 +174,8 @@ func (l *LogImpl) build() *LogImpl {
 	}
 
 	zapsugar := zaplgr.Sugar()
-
-	_globalLog = &LogImpl{s: zapsugar}
-	return _globalLog
+	l.s = zapsugar
+	return l
 }
 
 func getZapLevel(level string) zapcore.Level {
@@ -210,9 +220,11 @@ func (l *LogImpl) Sync() error {
 }
 
 func (l *LogImpl) Named(name string) *LogImpl {
-	return &LogImpl{s: l.s.Named(name)}
+	l.s = l.s.Named(name)
+	return l
 }
 
 func (l *LogImpl) With(keysAndValues ...interface{}) *LogImpl {
-	return &LogImpl{s: l.s.With(keysAndValues...)}
+	l.s = l.s.With(keysAndValues...)
+	return l
 }

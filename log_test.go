@@ -91,3 +91,28 @@ func TestNewInvalidKeyValPairsSugarLoggerWillNotPanic(t *testing.T) {
 	// will add an extra error log message: Ignored key without a value
 	log.With("only_key").Info("hello world")
 }
+
+func TestRegplaceGlobal(t *testing.T) {
+	t.Logf("----------------------------------------------------------------- console, level debug")
+	log := NewLogger(WithName("log001"), WithEncoding("console"), WithLevel("debug"))
+	log = log.With("foo", "bar")
+
+	log.Debug("this is some debug log", "uid", 7, "name", "user001")
+	log.Info("this is a info message", "uid", 7, "name", "user001")
+	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
+	log.Error("something bad happend!", "uid", 1024, "name", "user001")
+
+	t.Logf("----------------------------------------------------------------- json, level info")
+	S().Debug("this is some debug log", "uid", 7, "name", "user001")
+	S().Info("this is a info message", "uid", 7, "name", "user001")
+	S().Warn("danger, be aware!", "uid", 8, "name", "user001")
+	S().Error("something bad happend!", "uid", 1024, "name", "user001")
+
+	t.Logf("----------------------------------------------------------------- console, level warn")
+	log2 := NewLogger(WithName("log001"), WithEncoding("console"), WithLevel("warn"))
+	ReplaceGlobal(log2)
+	S().Debug("this is some debug log", "uid", 7, "name", "user001")
+	S().Info("this is a info message", "uid", 7, "name", "user001")
+	S().Warn("danger, be aware!", "uid", 8, "name", "user001")
+	S().Error("something bad happend!", "uid", 1024, "name", "user001")
+}
