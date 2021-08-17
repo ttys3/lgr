@@ -50,6 +50,21 @@ type Config struct {
 	ErrorOutputPaths  []string
 }
 
+func NewDefault() *LogImpl {
+	l := defaultCfg()
+	return l.build()
+}
+
+func NewLogger(options ...Option) *LogImpl {
+	l := defaultCfg()
+	// apply otions
+
+	for _, option := range options {
+		option(l)
+	}
+	return l.build()
+}
+
 type Logger interface {
 	Debug(msg string, keysAndValues ...interface{})
 	Info(msg string, keysAndValues ...interface{})
@@ -112,8 +127,9 @@ func defaultCfg() *LogImpl {
 		DisableStacktrace: true,
 		Name:              "",
 		ContextFields:     []string{},
-		OutputPaths:       []string{"stderr"},
-		ErrorOutputPaths:  []string{"stderr"},
+		// zap.newFileSink has special handle for `stdout` and `stderr`
+		OutputPaths:      []string{"stderr"},
+		ErrorOutputPaths: []string{"stderr"},
 	}
 
 	l := &LogImpl{Config: c}
@@ -128,27 +144,12 @@ func (l *LogImpl) clone() *LogImpl {
 	return cloned
 }
 
-func NewDefault() *LogImpl {
-	l := defaultCfg()
-	return l.build()
-}
-
 func ReplaceGlobal(newlgr *LogImpl) *LogImpl {
 	_globalLogLock.Lock()
 	_globalLog = newlgr
 	_globalLogLock.Unlock()
 
 	return _globalLog
-}
-
-func NewLogger(options ...Option) *LogImpl {
-	l := defaultCfg()
-	// apply otions
-
-	for _, option := range options {
-		option(l)
-	}
-	return l.build()
 }
 
 func (l *LogImpl) build() *LogImpl {
