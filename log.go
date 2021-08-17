@@ -76,7 +76,12 @@ func S() *LogImpl {
 			ReplaceGlobal(l)
 		}
 	})
-	return _globalLog
+
+	_globalLogLock.RLock()
+	s := _globalLog
+	_globalLogLock.RUnlock()
+
+	return s
 }
 
 type Logger interface {
