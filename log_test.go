@@ -8,16 +8,16 @@ func TestLgr(t *testing.T) {
 	t.Logf("-----------------------------------------------------------------")
 	log := NewDefault()
 	log = log.With("foo", "bar")
-	log.Info("this is a info message", "uid", 7, "name", "bob")
-	log.Warn("danger, be aware!", "uid", 8, "name", "bob")
+	log.Info("this is a info message", "uid", 7, "name", "user001")
+	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
 }
 
 func TestNew(t *testing.T) {
 	t.Logf("-----------------------------------------------------------------")
 	log := NewLogger(WithName("log001"), WithEncoding("console"))
 	log = log.With("foo", "bar")
-	log.Info("this is a info message", "uid", 7, "name", "bob")
-	log.Warn("danger, be aware!", "uid", 8, "name", "bob")
+	log.Info("this is a info message", "uid", 7, "name", "user001")
+	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
 }
 
 func TestNewLevelInfo(t *testing.T) {
@@ -25,11 +25,11 @@ func TestNewLevelInfo(t *testing.T) {
 	log := NewLogger(WithName("log001"), WithEncoding("console"), WithLevel("info"))
 	log = log.With("foo", "bar")
 
-	log.Debug("this is some debug log", "uid", 7, "name", "bob")
-	log.Info("this is a info message", "uid", 7, "name", "bob")
-	log.Warn("danger, be aware!", "uid", 8, "name", "bob")
-	log.Error("something bad happend!", "uid", 1024, "name", "bob")
-	log.Error("something really bad happend!", "uid", 1024, "name", "bob")
+	log.Debug("this is some debug log", "uid", 7, "name", "user001")
+	log.Info("this is a info message", "uid", 7, "name", "user001")
+	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
+	log.Error("something bad happend!", "uid", 1024, "name", "user001")
+	log.Error("something really bad happend!", "uid", 1024, "name", "user001")
 }
 
 func TestNewLevelDebug(t *testing.T) {
@@ -37,11 +37,11 @@ func TestNewLevelDebug(t *testing.T) {
 	log := NewLogger(WithName("log001"), WithEncoding("console"), WithLevel("debug"))
 	log = log.With("foo", "bar")
 
-	log.Debug("this is some debug log", "uid", 7, "name", "bob")
-	log.Info("this is a info message", "uid", 7, "name", "bob")
-	log.Warn("danger, be aware!", "uid", 8, "name", "bob")
-	log.Error("something bad happend!", "uid", 1024, "name", "bob")
-	log.Error("something really bad happend!", "uid", 1024, "name", "bob")
+	log.Debug("this is some debug log", "uid", 7, "name", "user001")
+	log.Info("this is a info message", "uid", 7, "name", "user001")
+	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
+	log.Error("something bad happend!", "uid", 1024, "name", "user001")
+	log.Error("something really bad happend!", "uid", 1024, "name", "user001")
 }
 
 func TestNewInvalidEncodingMustPanic(t *testing.T) {
@@ -56,8 +56,8 @@ func TestNewInvalidEncodingMustPanic(t *testing.T) {
 
 	log := NewLogger(WithName("log001"), WithEncoding("consolexxx"))
 	log = log.With("foo", "bar")
-	log.Info("this is a info message", "uid", 7, "name", "bob")
-	log.Warn("danger, be aware!", "uid", 8, "name", "bob")
+	log.Info("this is a info message", "uid", 7, "name", "user001")
+	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
 }
 
 func TestNewInvalidKeyValPairsMustPanic(t *testing.T) {

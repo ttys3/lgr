@@ -23,11 +23,11 @@ func S() *logImpl {
 
 type logImpl struct {
 	s                 *zap.SugaredLogger
+	DisableStacktrace bool
+	Name              string // Named adds a sub-scope to the logger's name. See Logger.Named for details.
 	Encoding          string
 	Level             string
 	DatetimeLayout    string
-	DisableStacktrace bool
-	Name              string   // Named adds a sub-scope to the logger's name. See Logger.Named for details.
 	ContextFields     []string // key, value  adds structured context
 }
 
@@ -50,6 +50,10 @@ func WithEncoding(encoding string) Option {
 
 func WithLevel(level string) Option {
 	return func(l *logImpl) { l.Level = level }
+}
+
+func WithDatetimeLayout(layout string) Option {
+	return func(l *logImpl) { l.DatetimeLayout = layout }
 }
 
 func WithDisableStacktrace(disableStacktrace bool) Option {
