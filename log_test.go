@@ -128,7 +128,8 @@ func TestRegplaceGlobal(t *testing.T) {
 
 	t.Logf("----------------------------------------------------------------- console, level warn")
 	// should extend warn level
-	log3 := S().With("key001", "val001")
+	// the logger name will be: log001.subname001.subname002
+	log3 := S().With("key001", "val001").Named("subname001").Named("subname002")
 	ReplaceGlobal(log3)
 	S().Debug("this is some debug log", "uid", 7, "name", "user001")
 	S().Info("this is a info message", "uid", 7, "name", "user001")
