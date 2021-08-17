@@ -9,16 +9,16 @@ import (
 
 var (
 	once       sync.Once
-	_globalLog *logImpl
+	_globalLog *LogImpl
 )
 
 // type assertion ensure implementation
 // do not return interface, this is bad for caller
 // see https://github.com/golang/go/wiki/CodeReviewComments#interfaces
-var _ Logger = (*logImpl)(nil)
+var _ Logger = (*LogImpl)(nil)
 
 // global logger, call via S()
-func S() *logImpl {
+func S() *LogImpl {
 	once.Do(func() {
 		l := NewDefault()
 		ReplaceGlobal(l)
@@ -26,7 +26,7 @@ func S() *logImpl {
 	return _globalLog
 }
 
-type logImpl struct {
+type LogImpl struct {
 	s                 *zap.SugaredLogger
 	DisableStacktrace bool
 	Name              string // Named adds a sub-scope to the logger's name. See Logger.Named for details.
@@ -43,43 +43,43 @@ type Logger interface {
 	Error(msg string, keysAndValues ...interface{})
 	Fatal(msg string, keysAndValues ...interface{})
 	Sync() error
-	Named(name string) *logImpl
-	With(keysAndValues ...interface{}) *logImpl
+	Named(name string) *LogImpl
+	With(keysAndValues ...interface{}) *LogImpl
 }
 
-type Option func(l *logImpl)
+type Option func(l *LogImpl)
 
 func WithEncoding(encoding string) Option {
-	return func(l *logImpl) { l.Encoding = encoding }
+	return func(l *LogImpl) { l.Encoding = encoding }
 }
 
 func WithLevel(level string) Option {
-	return func(l *logImpl) { l.Level = level }
+	return func(l *LogImpl) { l.Level = level }
 }
 
 func WithDatetimeLayout(layout string) Option {
-	return func(l *logImpl) { l.DatetimeLayout = layout }
+	return func(l *LogImpl) { l.DatetimeLayout = layout }
 }
 
 func WithDisableStacktrace(disableStacktrace bool) Option {
-	return func(l *logImpl) { l.DisableStacktrace = disableStacktrace }
+	return func(l *LogImpl) { l.DisableStacktrace = disableStacktrace }
 }
 
 func WithName(loggerName string) Option {
-	return func(l *logImpl) { l.Name = loggerName }
+	return func(l *LogImpl) { l.Name = loggerName }
 }
 
 func WithContextFields(kv ...string) Option {
 	if len(kv)%2 != 0 {
 		panic("ContextFields must in key, value pairs")
 	}
-	return func(l *logImpl) {
+	return func(l *LogImpl) {
 		l.ContextFields = kv
 	}
 }
 
-func defaultCfg() *logImpl {
-	l := &logImpl{
+func defaultCfg() *LogImpl {
+	l := &LogImpl{
 		Encoding:          "json",
 		Level:             "info",
 		DatetimeLayout:    DefaultTimeLayout,
@@ -90,17 +90,17 @@ func defaultCfg() *logImpl {
 	return l
 }
 
-func NewDefault() *logImpl {
+func NewDefault() *LogImpl {
 	l := defaultCfg()
 	return l.build()
 }
 
-func ReplaceGlobal(newlgr *logImpl) *logImpl {
+func ReplaceGlobal(newlgr *LogImpl) *LogImpl {
 	_globalLog = newlgr
 	return _globalLog
 }
 
-func NewLogger(options ...Option) *logImpl {
+func NewLogger(options ...Option) *LogImpl {
 	l := defaultCfg()
 	// apply otions
 
@@ -110,7 +110,7 @@ func NewLogger(options ...Option) *logImpl {
 	return l.build()
 }
 
-func (l *logImpl) build() *logImpl {
+func (l *LogImpl) build() *LogImpl {
 	zapcfg := zap.NewProductionConfig()
 	zapcfg.Encoding = l.Encoding
 	zapcfg.Level = zap.NewAtomicLevelAt(getZapLevel(l.Level))
@@ -140,7 +140,7 @@ func (l *logImpl) build() *logImpl {
 
 	zapsugar := zaplgr.Sugar()
 
-	_globalLog = &logImpl{s: zapsugar}
+	_globalLog = &LogImpl{s: zapsugar}
 	return _globalLog
 }
 
@@ -161,34 +161,34 @@ func getZapLevel(level string) zapcore.Level {
 	return zapLevel
 }
 
-func (l *logImpl) Debug(msg string, keysAndValues ...interface{}) {
+func (l *LogImpl) Debug(msg string, keysAndValues ...interface{}) {
 	l.s.Debugw(msg, keysAndValues...)
 }
 
-func (l *logImpl) Info(msg string, keysAndValues ...interface{}) {
+func (l *LogImpl) Info(msg string, keysAndValues ...interface{}) {
 	l.s.Infow(msg, keysAndValues...)
 }
 
-func (l *logImpl) Warn(msg string, keysAndValues ...interface{}) {
+func (l *LogImpl) Warn(msg string, keysAndValues ...interface{}) {
 	l.s.Warnw(msg, keysAndValues...)
 }
 
-func (l *logImpl) Error(msg string, keysAndValues ...interface{}) {
+func (l *LogImpl) Error(msg string, keysAndValues ...interface{}) {
 	l.s.Errorw(msg, keysAndValues...)
 }
 
-func (l *logImpl) Fatal(msg string, keysAndValues ...interface{}) {
+func (l *LogImpl) Fatal(msg string, keysAndValues ...interface{}) {
 	l.s.Fatalw(msg, keysAndValues...)
 }
 
-func (l *logImpl) Sync() error {
+func (l *LogImpl) Sync() error {
 	return l.s.Sync()
 }
 
-func (l *logImpl) Named(name string) *logImpl {
-	return &logImpl{s: l.s.Named(name)}
+func (l *LogImpl) Named(name string) *LogImpl {
+	return &LogImpl{s: l.s.Named(name)}
 }
 
-func (l *logImpl) With(keysAndValues ...interface{}) *logImpl {
-	return &logImpl{s: l.s.With(keysAndValues...)}
+func (l *LogImpl) With(keysAndValues ...interface{}) *LogImpl {
+	return &LogImpl{s: l.s.With(keysAndValues...)}
 }
