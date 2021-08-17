@@ -1,22 +1,22 @@
 # lgr -- simple structured logging wrapper based on zap
 
 
-## usage
+## 1. Usage
 
-## supported methods
+## 1.1 Supported Methods
 
 ```golang
-	Debug(msg string, keysAndValues ...interface{})
-	Info(msg string, keysAndValues ...interface{})
-	Warn(msg string, keysAndValues ...interface{})
-	Error(msg string, keysAndValues ...interface{})
-	Fatal(msg string, keysAndValues ...interface{})
-	Sync() error
-	Named(name string) *LogImpl
-	With(keysAndValues ...interface{}) *LogImpl
+Debug(msg string, keysAndValues ...interface{})
+Info(msg string, keysAndValues ...interface{})
+Warn(msg string, keysAndValues ...interface{})
+Error(msg string, keysAndValues ...interface{})
+Fatal(msg string, keysAndValues ...interface{})
+Sync() error
+Named(name string) *LogImpl
+With(keysAndValues ...interface{}) *LogImpl
 ```
 
-### simple
+### 1.2 Simple Usage
 
 ```golang
 // with default config: info level, encode to json
@@ -25,7 +25,7 @@ log.Info("this is a info message", "uid", 7, "name", "user001")
 log.Warn("this is a warning message", "uid", 8, "name", "Tom")
 ```
 
-### with options
+### 1.3 With Options
 
 ```golang
 // log to console, set log level to debug
@@ -39,14 +39,14 @@ log = log.With(
 log.Info("this is a info message", "uid", 7, "name", "user001")
 ```
 
-### using the package level global logger
+### 1.4 Using the Package Level Global Logger
 
 ```golang
 lgr.S().Info("this is a info message", "uid", 7, "name", "user001")
 lgr.S().Warn("this is a warning message", "uid", 8, "name", "Tom")
 ```
 
-### replace the package level global logger
+### 1.5 Replace the Package Level Global Logger
 
 ```golang
 // log to console, set log level to debug
@@ -58,7 +58,7 @@ lgr.S().Info("this is a info message", "uid", 7, "name", "user001")
 lgr.S().Warn("this is a warning message", "uid", 8, "name", "Tom")
 ```
 
-## construct Options
+## 2. Construct Options
 
 ```golang
 WithEncoding(encoding string)
@@ -73,6 +73,4 @@ WithName(loggerName string)
 
 WithContextFields(kv ...string)
 ```
-
-
 
