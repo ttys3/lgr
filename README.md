@@ -29,14 +29,27 @@ log.Warn("this is a warning message", "uid", 8, "name", "Tom")
 
 ```golang
 // log to console, set log level to debug
-log := lgr.NewLogger(lgr.WithEncoding("console"), lgr.WithLevel("debug"))
+log := lgr.NewLogger(
+    lgr.WithEncoding("console"),
+    lgr.WithLevel("debug"), 
+    lgr.WithInitialFields(
+        "app", "hello-world",
+        "version", "v1.0.0")
+    ),
+)
 
 // with context fields: key,value ...
 log = log.With(
-"app_name", "hellow-world",
-"version", "v1.0.0")
+"user_id", 12345,
+"username", "user007")
 
-log.Info("this is a info message", "uid", 7, "name", "user001")
+// do something ...
+
+log.Info("last login time", "datetime", "2021-08-18 02:21:00")
+
+// do something ...
+
+log.Info("logging user info", "age", 18, "nation_code", "US")
 ```
 
 ### 1.4 Using the Package Level Global Logger
