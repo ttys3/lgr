@@ -1,6 +1,7 @@
 package lgr
 
 import (
+	"bytes"
 	"testing"
 )
 
@@ -12,12 +13,21 @@ func TestLgr(t *testing.T) {
 	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
 }
 
-func TestNew(t *testing.T) {
-	t.Logf("-----------------------------------------------------------------")
-	log := NewLogger(WithName("log001"), WithEncoding("console"))
+func TestNewWithCustomSink(t *testing.T) {
+	t.Logf("----------------------------------------------------------------- no time key")
+	buf := bytes.NewBuffer([]byte(""))
+	log := NewLogger(WithName("log001"), WithEncoding("console"), WithCustomSink(buf), WithTimeKey(""), WithColorLevel(false))
 	log = log.With("foo", "bar")
 	log.Info("this is a info message", "uid", 7, "name", "user001")
 	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
+	t.Logf("buf=\n%s", buf)
+	expect := `info	log001	lgr/log_test.go:21	this is a info message	{"foo": "bar", "uid": 7, "name": "user001"}
+warn	log001	lgr/log_test.go:22	danger, be aware!	{"foo": "bar", "uid": 8, "name": "user001"}
+`
+
+	if buf.String() != expect {
+		t.Fail()
+	}
 }
 
 func TestNewLevelInfo(t *testing.T) {
