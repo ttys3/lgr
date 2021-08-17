@@ -115,4 +115,13 @@ func TestRegplaceGlobal(t *testing.T) {
 	S().Info("this is a info message", "uid", 7, "name", "user001")
 	S().Warn("danger, be aware!", "uid", 8, "name", "user001")
 	S().Error("something bad happend!", "uid", 1024, "name", "user001")
+
+	t.Logf("----------------------------------------------------------------- console, level warn")
+	// should extend warn level
+	log3 := S().With("key001", "val001")
+	ReplaceGlobal(log3)
+	S().Debug("this is some debug log", "uid", 7, "name", "user001")
+	S().Info("this is a info message", "uid", 7, "name", "user001")
+	S().Warn("danger, be aware!", "uid", 8, "name", "user001")
+	S().Error("something bad happend!", "uid", 1024, "name", "user001")
 }

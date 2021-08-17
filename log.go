@@ -35,7 +35,11 @@ func S() *LogImpl {
 }
 
 type LogImpl struct {
-	s                 *zap.SugaredLogger
+	s *zap.SugaredLogger
+	Config
+}
+
+type Config struct {
 	DisableStacktrace bool
 	Name              string // Named adds a sub-scope to the logger's name. See Logger.Named for details.
 	Encoding          string
@@ -101,7 +105,7 @@ func WithErrorOutputPaths(errOutputPaths ...string) Option {
 }
 
 func defaultCfg() *LogImpl {
-	l := &LogImpl{
+	c := Config{
 		Encoding:          "json",
 		Level:             "info",
 		DatetimeLayout:    DefaultTimeLayout,
@@ -111,7 +115,17 @@ func defaultCfg() *LogImpl {
 		OutputPaths:       []string{"stderr"},
 		ErrorOutputPaths:  []string{"stderr"},
 	}
+
+	l := &LogImpl{Config: c}
 	return l
+}
+
+func (l *LogImpl) clone() *LogImpl {
+	cloned := &LogImpl{
+		s:      l.s,
+		Config: l.Config,
+	}
+	return cloned
 }
 
 func NewDefault() *LogImpl {
@@ -220,11 +234,13 @@ func (l *LogImpl) Sync() error {
 }
 
 func (l *LogImpl) Named(name string) *LogImpl {
-	l.s = l.s.Named(name)
-	return l
+	newLgr := l.clone()
+	newLgr.s = l.s.Named(name)
+	return newLgr
 }
 
 func (l *LogImpl) With(keysAndValues ...interface{}) *LogImpl {
-	l.s = l.s.With(keysAndValues...)
-	return l
+	newLgr := l.clone()
+	newLgr.s = l.s.With(keysAndValues...)
+	return newLgr
 }
