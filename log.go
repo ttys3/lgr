@@ -258,7 +258,8 @@ func (l *LogImpl) build() *LogImpl {
 	if len(l.InitialFields)%2 == 0 && len(l.InitialFields) > 0 {
 		fields := make([]zap.Field, 0, len(l.InitialFields)/2)
 		for i := 0; i < len(l.InitialFields); i += 2 {
-			fields = append(fields, zap.String(l.InitialFields[i], l.InitialFields[i+1]))
+			key, val := l.InitialFields[i], l.InitialFields[i+1]
+			fields = append(fields, zap.String(key, val))
 		}
 		zaplgr = zaplgr.With(fields...)
 	}
