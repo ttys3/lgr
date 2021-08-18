@@ -61,6 +61,19 @@ log.Info("last login time", "datetime", "2021-08-18 02:21:00")
 log.Info("logging user info", "age", 18, "nation_code", "US")
 ```
 
+
+with custom sink
+
+```golang
+// write log to bytes buffer
+buf := bytes.NewBuffer([]byte(""))
+log := NewLogger(WithEncoding("console"), WithCustomSink(buf))
+
+
+// write log to io.Discard
+log := NewLogger(WithEncoding("console"), WithCustomSink(io.Discard))
+```
+
 ### 1.4 Using the Package Level Global Logger
 
 ```golang
