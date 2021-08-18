@@ -3,6 +3,15 @@
 
 ## 1. Usage
 
+## 1.0 Construct Functions
+
+```golang
+func NewDefault() *LogImpl
+func NewLogger(options ...Option) *LogImpl
+func S() *LogImpl
+func ReplaceGlobal(newlgr *LogImpl) *LogImpl
+```
+
 ## 1.1 Supported Methods
 
 ```golang
