@@ -2,6 +2,7 @@ ci/test:
 	go test -v ./...
 
 test:
+	command -v richgo || (WORK=$(shell pwd) && cd /tmp && GO111MODULE=on go get -u github.com/kyoh86/richgo && cd $(WORK))
 	richgo test -v ./...
 
 fmt:
