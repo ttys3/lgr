@@ -3,6 +3,10 @@
 
 ## 1. Usage
 
+```golang
+import "github.com/ttys3/lgr"
+```
+
 ## 1.0 Construct Functions
 
 ```golang
