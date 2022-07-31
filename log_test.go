@@ -136,3 +136,18 @@ func TestRegplaceGlobal(t *testing.T) {
 	S().Warn("danger, be aware!", "uid", 8, "name", "user001")
 	S().Error("something bad happend!", "uid", 1024, "name", "user001")
 }
+
+func TestCliEncoderForceColored(t *testing.T) {
+
+	t.Setenv("CLICOLOR_FORCE", "1")
+
+	t.Logf("-----------------------------------------------------------------")
+	log := NewLogger(WithName("log001"), WithEncoding("cli"), WithLevel("debug"), WithDisableCaller(true))
+	log = log.With("foo", "bar")
+
+	log.Debug("this is some debug log", "uid", 7, "name", "user001")
+	log.Info("this is a info message", "uid", 7, "name", "user001")
+	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
+	log.Error("something bad happend!", "uid", 1024, "name", "user001")
+	log.Error("something really bad happend!", "uid", 1024, "name", "user001")
+}

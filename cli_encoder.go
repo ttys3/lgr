@@ -85,6 +85,7 @@ func NewCliEncoder(cfg zapcore.EncoderConfig) zapcore.Encoder {
 		cfg.NewReflectedEncoder = internal.DefaultReflectedEncoder
 	}
 
+	forceEnableColor()
 	cfg.EncodeLevel = CliLevelEncoder
 	cfg.TimeKey = ""
 
