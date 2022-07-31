@@ -1,6 +1,8 @@
 package lgr
 
-import "io"
+import (
+	"io"
+)
 
 type Option func(l *LogImpl)
 
@@ -16,6 +18,10 @@ func WithColorLevel(enable bool) Option {
 	return func(l *LogImpl) { l.ColorLevel = enable }
 }
 
+func WithCliLevel(enable bool) Option {
+	return func(l *LogImpl) { l.CliLevel = enable }
+}
+
 func WithTimeKey(tk string) Option {
 	return func(l *LogImpl) { l.TimeKey = tk }
 }
@@ -26,6 +32,10 @@ func WithDatetimeLayout(layout string) Option {
 
 func WithDisableStacktrace(disableStacktrace bool) Option {
 	return func(l *LogImpl) { l.DisableStacktrace = disableStacktrace }
+}
+
+func WithDisableCaller(disableCaller bool) Option {
+	return func(l *LogImpl) { l.DisableCaller = disableCaller }
 }
 
 func WithName(loggerName string) Option {

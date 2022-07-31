@@ -13,6 +13,7 @@ import (
 const (
 	EncodingConsole = "console"
 	EncodingJSON    = "json"
+	EncodingCli     = "cli"
 )
 
 var (
@@ -36,7 +37,8 @@ type Config struct {
 	DisableCaller     bool
 	Development       bool
 	Sampling          bool
-	ColorLevel        bool   // this is only for console encoding
+	ColorLevel        bool // this is only for console encoding
+	CliLevel          bool
 	Name              string // Named adds a sub-scope to the logger's name. See Logger.Named for details.
 	Encoding          string
 	Level             string
@@ -46,6 +48,14 @@ type Config struct {
 	OutputPaths       []string
 	ErrorOutputPaths  []string  // for zap logging self error
 	CustomSink        io.Writer // this will override OutputPaths config
+}
+
+func init() {
+	zap.RegisterEncoder("cli", CliEncoding)
+}
+
+func CliEncoding(config zapcore.EncoderConfig) (zapcore.Encoder, error) {
+	return NewCliEncoder(config), nil
 }
 
 func NewDefault() *LogImpl {
@@ -180,7 +190,7 @@ func (cfg *Config) buildOptions(errSink zapcore.WriteSyncer, scfg *zap.SamplingC
 }
 
 func (l *LogImpl) build() *LogImpl {
-	if l.Encoding != EncodingConsole && l.Encoding != EncodingJSON {
+	if l.Encoding != EncodingConsole && l.Encoding != EncodingJSON && l.Encoding != EncodingCli {
 		panic("invalid encoding config")
 	}
 
@@ -209,6 +219,10 @@ func (l *LogImpl) build() *LogImpl {
 		}
 	}
 
+	if l.CliLevel {
+		encoderConfig.EncodeLevel = CliLevelEncoder
+	}
+
 	// allow set to empty to disable default ts field
 	encoderConfig.TimeKey = l.TimeKey
 
@@ -225,6 +239,8 @@ func (l *LogImpl) build() *LogImpl {
 		enc = zapcore.NewConsoleEncoder(encoderConfig)
 	case EncodingJSON:
 		enc = zapcore.NewJSONEncoder(encoderConfig)
+	case EncodingCli:
+		enc = NewCliEncoder(encoderConfig)
 	}
 
 	var sink zapcore.WriteSyncer
