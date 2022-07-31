@@ -470,38 +470,36 @@ func (enc *cliEncoder) AppendUintptr(v uintptr)        { enc.AppendUint64(uint64
 // Unlike the standard library's encoder, it doesn't attempt to protect the
 // user from browser vulnerabilities or JSONP-related problems.
 func (enc *cliEncoder) safeAddString(s string) {
-	enc.AppendString(s)
-	// for i := 0; i < len(s); {
-	// 	if enc.tryAddRuneSelf(s[i]) {
-	// 		i++
-	// 		continue
-	// 	}
-	// 	r, size := utf8.DecodeRuneInString(s[i:])
-	// 	if enc.tryAddRuneError(r, size) {
-	// 		i++
-	// 		continue
-	// 	}
-	// 	enc.buf.AppendString(s[i : i+size])
-	// 	i += size
-	// }
+	for i := 0; i < len(s); {
+		if enc.tryAddRuneSelf(s[i]) {
+			i++
+			continue
+		}
+		r, size := utf8.DecodeRuneInString(s[i:])
+		if enc.tryAddRuneError(r, size) {
+			i++
+			continue
+		}
+		enc.buf.AppendString(s[i : i+size])
+		i += size
+	}
 }
 
 // safeAddByteString is no-alloc equivalent of safeAddString(string(s)) for s []byte.
 func (enc *cliEncoder) safeAddByteString(s []byte) {
-	enc.AppendByteString(s)
-	// for i := 0; i < len(s); {
-	// 	if enc.tryAddRuneSelf(s[i]) {
-	// 		i++
-	// 		continue
-	// 	}
-	// 	r, size := utf8.DecodeRune(s[i:])
-	// 	if enc.tryAddRuneError(r, size) {
-	// 		i++
-	// 		continue
-	// 	}
-	// 	enc.buf.Write(s[i : i+size])
-	// 	i += size
-	// }
+	for i := 0; i < len(s); {
+		if enc.tryAddRuneSelf(s[i]) {
+			i++
+			continue
+		}
+		r, size := utf8.DecodeRune(s[i:])
+		if enc.tryAddRuneError(r, size) {
+			i++
+			continue
+		}
+		enc.buf.Write(s[i : i+size])
+		i += size
+	}
 }
 
 // For JSON-escaping; see cliEncoder.safeAddString below.
