@@ -12,3 +12,20 @@ func DefaultReflectedEncoder(w io.Writer) zapcore.ReflectedEncoder {
 	enc.SetEscapeHTML(false)
 	return enc
 }
+
+func CliReflectedEncoder(w io.Writer) zapcore.ReflectedEncoder {
+	return &CliJSONEncoder{w: w}
+}
+
+type CliJSONEncoder struct {
+	w io.Writer
+}
+
+func (c *CliJSONEncoder) Encode(v interface{}) error {
+	out, err := Marshal(v)
+	if err != nil {
+		return err
+	}
+	_, err = c.w.Write(out)
+	return err
+}

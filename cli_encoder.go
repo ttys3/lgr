@@ -82,7 +82,7 @@ func NewCliEncoder(cfg zapcore.EncoderConfig) zapcore.Encoder {
 
 	// If no EncoderConfig.NewReflectedEncoder is provided by the user, then use default
 	if cfg.NewReflectedEncoder == nil {
-		cfg.NewReflectedEncoder = internal.DefaultReflectedEncoder
+		cfg.NewReflectedEncoder = internal.CliReflectedEncoder
 	}
 
 	forceEnableColor()
@@ -502,9 +502,6 @@ func (enc *cliEncoder) safeAddByteString(s []byte) {
 		i += size
 	}
 }
-
-// For JSON-escaping; see cliEncoder.safeAddString below.
-const _hex = "0123456789abcdef"
 
 // tryAddRuneSelf appends b if it is valid UTF-8 character represented in a single byte.
 func (enc *cliEncoder) tryAddRuneSelf(b byte) bool {

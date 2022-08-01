@@ -150,4 +150,5 @@ func TestCliEncoderForceColored(t *testing.T) {
 	log.Warn("danger, be aware!", "uid", 8, "name", "user001")
 	log.Error("something bad happend!", "uid", 1024, "name", "user001")
 	log.Error("something really bad happend!", "uid", 1024, "name", "user001")
+	log.Error("something really bad happend!", "user", map[string]interface{}{"uid": 1024, "name": "user001"})
 }
