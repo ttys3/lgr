@@ -151,4 +151,11 @@ func TestCliEncoderForceColored(t *testing.T) {
 	log.Error("something bad happend!", "uid", 1024, "name", "user001")
 	log.Error("something really bad happend!", "uid", 1024, "name", "user001")
 	log.Error("something really bad happend!", "user", map[string]interface{}{"uid": 1024, "name": "user001"})
+
+	type Foo struct {
+		Uid  int
+		Name string
+		Age  int
+	}
+	log.Info("test struct marshal", "user", &Foo{})
 }

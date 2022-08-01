@@ -149,7 +149,7 @@ import (
 func Marshal(v any) ([]byte, error) {
 	e := newEncodeState()
 
-	err := e.marshal(v, encOpts{escapeHTML: true})
+	err := e.marshal(v, encOpts{escapeHTML: false})
 	if err != nil {
 		return nil, err
 	}
@@ -655,11 +655,11 @@ FieldLoop:
 		}
 		e.WriteByte(next)
 		next = ','
-		if opts.escapeHTML {
-			e.WriteString(f.nameEscHTML)
-		} else {
-			e.WriteString(f.nameNonEsc)
-		}
+		// if opts.escapeHTML {
+		// 	e.WriteString(f.nameEscHTML)
+		// } else {
+		e.WriteString(f.nameNonEsc)
+		// }
 		// opts.quoted = f.quoted
 		f.encoder(e, fv, opts)
 	}
