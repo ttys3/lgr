@@ -158,4 +158,12 @@ func TestCliEncoderForceColored(t *testing.T) {
 		Age  int
 	}
 	log.Info("test struct marshal", "user", &Foo{})
+
+	log.Info("test slice", "user", []map[string]interface{}{
+		{"uid": 1024, "name": "user001"},
+		{"uid": 1024, "name": "user001"},
+	})
+
+	log.Warn("test slice", "user", []string{"foo", "bar"})
+	log.Warn("test slice", "user", []int64{1, 2, 3, 4})
 }

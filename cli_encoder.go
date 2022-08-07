@@ -344,12 +344,12 @@ func (enc *cliEncoder) closeOpenNamespaces() {
 }
 
 func (enc *cliEncoder) AppendBool(val bool) {
-	// enc.addElementSeparator()
+	enc.addElementSeparator()
 	enc.buf.AppendBool(val)
 }
 
 func (enc *cliEncoder) AppendByteString(val []byte) {
-	// enc.addElementSeparator()
+	enc.addElementSeparator()
 
 	enc.safeAddByteString(val)
 
@@ -389,7 +389,7 @@ func (enc *cliEncoder) AppendDuration(val time.Duration) {
 }
 
 func (enc *cliEncoder) AppendInt64(val int64) {
-	// enc.addElementSeparator()
+	enc.addElementSeparator()
 	enc.buf.AppendInt(val)
 }
 
@@ -398,13 +398,13 @@ func (enc *cliEncoder) AppendReflected(val interface{}) error {
 	if err != nil {
 		return err
 	}
-	// enc.addElementSeparator()
+	enc.addElementSeparator()
 	_, err = enc.buf.Write(valueBytes)
 	return err
 }
 
 func (enc *cliEncoder) AppendString(val string) {
-	// enc.addElementSeparator()
+	enc.addElementSeparator()
 	enc.safeAddString(val)
 }
 
